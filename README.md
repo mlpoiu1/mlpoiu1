@@ -7,6 +7,7 @@ I have started building a modular cybersecurity project that combines:
 - Log Analysis (AI + Rule-based)
 - Hardening Audit for system/network controls
 - Phishing URL Detection
+- Mobile App Security Assessment (Android static checks)
 - Automated Security Report Generation
 
 Project source is in:

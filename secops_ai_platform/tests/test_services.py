@@ -25,3 +25,42 @@ def test_report_generator_orders_findings() -> None:
         {"title": "B", "severity": "high"},
     ])
     assert result["highest_severity"] == "high"
+
+
+def test_mobile_security_assessment_reports_risk() -> None:
+    from secops_ai_platform.services.mobile_security_assessor.service import assess_android_app
+
+    result = assess_android_app(
+        manifest={
+            "application_id": "com.demo.bank",
+            "permissions": ["android.permission.READ_SMS"],
+            "debuggable": True,
+            "exported_components": ["MainActivity"],
+            "cleartext_traffic_permitted": True,
+        },
+        code_scan={"hardcoded_secrets": 2, "weak_crypto_apis": 1},
+    )
+
+    assert result["authorized_testing_only"] is True
+    assert result["finding_count"] == 6
+    assert result["highest_severity"] == "critical"
+    assert result["risk_score"] == 100
+
+
+def test_mobile_security_assessment_clean_profile() -> None:
+    from secops_ai_platform.services.mobile_security_assessor.service import assess_android_app
+
+    result = assess_android_app(
+        manifest={
+            "application_id": "com.demo.clean",
+            "permissions": [],
+            "debuggable": False,
+            "exported_components": [],
+            "cleartext_traffic_permitted": False,
+        },
+        code_scan={"hardcoded_secrets": 0, "weak_crypto_apis": 0},
+    )
+
+    assert result["finding_count"] == 0
+    assert result["highest_severity"] == "info"
+    assert result["risk_score"] == 0
